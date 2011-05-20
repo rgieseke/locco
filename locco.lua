@@ -19,6 +19,13 @@
 -- the command-line:
 --     locco.lua project/*.lua
 --
+-- Locco is monolingual, but there are also
+-- [Docco](http://jashkenas.github.com/docco/),
+-- [Pycco](http://fitzgen.github.com/pycco/),
+-- [Rocco](http://rtomayko.github.com/rocco/>)
+-- and
+-- [Shocco](http://rtomayko.github.com/shocco/)
+-- written in and with support for other languages.<br>
 -- The source for Locco is available on
 -- [GitHub](https://github.com/rgieseke/locco), and released under the MIT
 -- license.
