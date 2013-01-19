@@ -8,8 +8,9 @@
 -- This page is the result of running Locco against its own source file:
 --     locco.lua locco.lua
 --
--- For its syntax highlighting Locco relies on the help of David Manura's
--- [Lua Balanced](http://lua-users.org/wiki/LuaBalanced) to split
+-- For its syntax highlighting Locco relies on the help of
+-- [David Manura](http://lua-users.org/wiki/DavidManura)'s
+-- [Lua Balanced](https://github.com/davidm/lua-balanced) to split
 -- up the code. As a markdown engine it ships with Niklas Frykholm's
 -- [markdown.lua](http://www.frykholm.se/files/markdown.lua). Otherwise there
 -- are no external dependencies.
