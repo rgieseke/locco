@@ -23,13 +23,15 @@
 --
 -- Locco is monolingual, but there are also
 -- [Docco](http://jashkenas.github.com/docco/),
+-- [Rocco](http://rtomayko.github.com/rocco/>),
+-- [Shocco](http://rtomayko.github.com/shocco/),
 -- [Pycco](http://fitzgen.github.com/pycco/),
--- [Rocco](http://rtomayko.github.com/rocco/>)
+-- [Marginalia](http://fogus.github.com/marginalia/)
 -- and
--- [Shocco](http://rtomayko.github.com/shocco/)
+-- [Nocco](http://dontangg.github.com/nocco/)
 -- written in and with support for other languages.<br>
--- The source for Locco is available on
--- [GitHub](https://github.com/rgieseke/locco), and released under the MIT
+-- The [source for Locco](https://github.com/rgieseke/locco) is available on
+-- GitHub, and released under the MIT
 -- license.
 
 -- ### Main Documentation Generation Functions
