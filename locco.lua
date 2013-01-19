@@ -1,4 +1,4 @@
-#!/usr/bin/lua
+#!/usr/bin/env lua
 -- __Locco__ is a Lua port of [Docco](http://jashkenas.github.com/docco/),
 -- the quick-and-dirty, hundred-line-long, literate-programming-style
 -- documentation generator. It produces HTML that displays your comments
