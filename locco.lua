@@ -11,7 +11,8 @@
 -- For its syntax highlighting Locco relies on the help of
 -- [David Manura](http://lua-users.org/wiki/DavidManura)'s
 -- [Lua Balanced](https://github.com/davidm/lua-balanced) to split
--- up the code. As a markdown engine it ships with Niklas Frykholm's
+-- up the code. As a markdown engine it ships with
+-- [Niklas Frykholm](http://www.frykholm.se/)'s
 -- [markdown.lua](http://www.frykholm.se/files/markdown.lua). Otherwise there
 -- are no external dependencies.
 --
