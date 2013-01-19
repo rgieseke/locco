@@ -9,14 +9,18 @@ Locco is a Lua port of Docco: the original quick-and-dirty, hundred-line-
 long, literate-programming-style documentation generator. For more information,
 see the generated docs:
 
-<http://rgieseke.github.com/locco/>
+http://rgieseke.github.com/locco/
 
 Other languages:
 
-CoffeeScript - <http://jashkenas.github.com/docco/>
+CoffeeScript - http://jashkenas.github.com/docco/
 
-Python - <http://fitzgen.github.com/pycco/>
+Ruby - http://rtomayko.github.com/rocco/
 
-Ruby - <http://rtomayko.github.com/rocco/>
+Sh - http://rtomayko.github.com/shocco/
 
-Sh - <http://rtomayko.github.com/shocco/>
+Python - http://fitzgen.github.com/pycco/
+
+Clojure - http://fogus.github.com/marginalia/
+
+C# - http://dontangg.github.com/nocco/
