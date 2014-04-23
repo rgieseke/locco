@@ -118,8 +118,8 @@ function generate_html(source, path, filename, sections, jump_to)
   f:write(h)
   for i=1, #sections do
     local t = template.table_entry:gsub('%%index%%', i..'')
-    t = t:gsub('%%docs_html%%', sections[i]['docs_html']:gsub('%%', '%%%%'))
-    t = t:gsub('%%code_html%%', sections[i]['code_html']:gsub('%%', '%%%%'))
+    t = t:gsub('%%docs_html%%', replace_percent(sections[i]['docs_html']))
+    t = t:gsub('%%code_html%%', replace_percent(sections[i]['code_html']))
     f:write(t)
   end
   f:write(template.footer)
@@ -159,6 +159,11 @@ function escape(s)
   s = s:gsub('<', '&lt;')
   s = s:gsub('>', '&gt;')
   s = s:gsub('%%', '&#37;')
+  return s
+end
+
+function replace_percent(s)
+  s = s:gsub('%%', '%%%%')
   return s
 end
 
