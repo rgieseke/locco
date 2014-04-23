@@ -118,8 +118,8 @@ function generate_html(source, path, filename, sections, jump_to)
   f:write(h)
   for i=1, #sections do
     local t = template.table_entry:gsub('%%index%%', i..'')
-    t = t:gsub('%%docs_html%%', sections[i]['docs_html'])
-    t = t:gsub('%%code_html%%', sections[i]['code_html'])
+    t = t:gsub('%%docs_html%%', sections[i]['docs_html']:gsub('%%', '%%%%'))
+    t = t:gsub('%%code_html%%', sections[i]['code_html']:gsub('%%', '%%%%'))
     f:write(t)
   end
   f:write(template.footer)
