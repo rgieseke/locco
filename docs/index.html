@@ -212,8 +212,8 @@ Parameters:<br>
   f:write(h)
   <span class="k">for</span> i=1, #sections <span class="k">do</span>
     <span class="k">local</span> t = template.table_entry:gsub(<span class="s">'&#37;&#37;index&#37;&#37;'</span>, i..<span class="s">''</span>)
-    t = t:gsub(<span class="s">'&#37;&#37;docs_html&#37;&#37;'</span>, sections[i][<span class="s">'docs_html'</span>])
-    t = t:gsub(<span class="s">'&#37;&#37;code_html&#37;&#37;'</span>, sections[i][<span class="s">'code_html'</span>])
+    t = t:gsub(<span class="s">'&#37;&#37;docs_html&#37;&#37;'</span>, replace_percent(sections[i][<span class="s">'docs_html'</span>]))
+    t = t:gsub(<span class="s">'&#37;&#37;code_html&#37;&#37;'</span>, replace_percent(sections[i][<span class="s">'code_html'</span>]))
     f:write(t)
   <span class="k">end</span>
   f:write(template.footer)
@@ -334,6 +334,11 @@ Parameter:<br>
   s = s:gsub(<span class="s">'&lt;'</span>, <span class="s">'&lt;'</span>)
   s = s:gsub(<span class="s">'&gt;'</span>, <span class="s">'&gt;'</span>)
   s = s:gsub(<span class="s">'&#37;&#37;'</span>, <span class="s">'&#37;'</span>)
+  <span class="k">return</span> s
+<span class="k">end</span>
+
+<span class="k">function</span> <span class="nf">replace_percent</span>(s)
+  s = s:gsub(<span class="s">'&#37;&#37;'</span>, <span class="s">'&#37;&#37;&#37;&#37;'</span>)
   <span class="k">return</span> s
 <span class="k">end</span>
 </pre></div>
