@@ -1,6 +1,6 @@
-module(..., package.seeall)
+local M = {}
 
-header = [[<!DOCTYPE html>
+M.header = [[<!DOCTYPE html>
 
 <html>
 <head>
@@ -27,24 +27,24 @@ header = [[<!DOCTYPE html>
       <tbody>
 ]]
 
-jump_start = [[
+M.jump_start = [[
 <div id="jump_to">
   Jump To &hellip;
   <div id="jump_wrapper">
   <div id="jump_page">
 ]]
 
-jump = [[
+M.jump = [[
   <a class="source" href="%jump_html%">%jump_lua%</a>
 ]]
 
-jump_end = [[
+M.jump_end = [[
     </div>
   </div>
 </div>
 ]]
 
-table_entry = [[
+M.table_entry = [[
 <tr id="section-%index%">
 <td class="docs">
   <div class="pilwrap">
@@ -57,8 +57,10 @@ table_entry = [[
 </td>
 </tr>]]
 
-footer = [[</tbody>
+M.footer = [[</tbody>
     </table>
   </div>
 </body>
 </html>]]
+
+return M

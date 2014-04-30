@@ -34,21 +34,119 @@
 -- GitHub, and released under the MIT
 -- license.
 
--- ### Main Documentation Generation Functions
+-- ### Setup & Helpers
 
--- Generate the documentation for a source file by reading it in,
--- splitting it up into comment/code sections, highlighting and merging
--- them into an HTML template.<br>
--- Parameters:<br>
--- _source_: The source file to process.<br>
--- _path_: Path of the source file.<br>
--- _filename_: The filename of the source file.<br>
--- _jump\_to_: A HTML chunk with links to other documentation files.
-function generate_documentation(source, path, filename, jump_to)
-  local sections = parse(source)
-  local sections = highlight(sections)
-  generate_html(source, path, filename, sections, jump_to)
+-- We need the script location to add the script's directory to the package
+-- path and to copy the style sheet from.
+local script_path = arg[0]:match('(.+)/.+')
+package.path = table.concat({
+  script_path..'/?.lua',
+  package.path
+}, ';');
+
+-- Load markdown.lua.
+local md = require 'markdown'
+-- Load Lua Balanced.
+local lb = require('luabalanced')
+-- Load HTML templates.
+local template = require 'template'
+
+-- Ensure the `docs` directory exists and return the _path_ of the source file.<br>
+-- Parameter:<br>
+-- _source_: The source file for which documentation is generated.<br>
+local function ensure_directory(source)
+  local path = source:match('(.+)/.+$')
+  if not path then path = '.' end
+  os.execute('mkdir -p '..path..'/docs')
+  return path
 end
+
+-- Insert HTML entities in a string.<br>
+-- Parameter:<br>
+-- _s_: String to escape.<br>
+local function escape(s)
+  s = s:gsub('<', '&lt;')
+  s = s:gsub('>', '&gt;')
+  s = s:gsub('%%', '&#37;')
+  return s
+end
+
+local function replace_percent(s)
+  s = s:gsub('%%', '%%%%')
+  return s
+end
+
+-- Define the Lua keywords, built-in functions and operators that should
+-- be highlighted.
+local keywords = { 'break', 'do', 'else', 'elseif', 'end', 'false', 'for',
+                   'function', 'if', 'in', 'local', 'nil', 'repeat', 'return',
+                   'then', 'true', 'until', 'while' }
+local functions = { 'assert', 'collectgarbage', 'dofile', 'error', 'getfenv',
+                    'getmetatable', 'ipairs', 'load', 'loadfile', 'loadstring',
+                    'module', 'next', 'pairs', 'pcall', 'print', 'rawequal',
+                    'rawget', 'rawset', 'require', 'setfenv', 'setmetatable',
+                    'tonumber', 'tostring', 'type', 'unpack', 'xpcall' }
+local operators = { 'and', 'not', 'or' }
+
+-- Wrap an item from a list of Lua keywords in a span template or return the
+-- unchanged item.<br>
+-- Parameters:<br>
+-- _item_: An item of a code snippet.<br>
+-- _item\_list_: List of keywords or functions.<br>
+-- _span\_class_: Style sheet class.<br>
+local function wrap_in_span(item, item_list, span_class)
+  for i=1, #item_list do
+    if item_list[i] == item then
+      item = '<span class="'..span_class..'">'..item..'</span>'
+      break
+    end
+  end
+  return item
+end
+
+-- Quick and dirty source code highlighting. A chunk of code is split into
+-- comments (at the end of a line), strings and code using the
+-- [Lua Balanced](https://github.com/davidm/lua-balanced/blob/master/luabalanced.lua)
+-- module. The code is then split again and matched against lists
+-- of Lua keywords, functions or operators. All Lua items are wrapped into
+-- a span having one of the classes defined in the Locco style sheet.<br>
+-- Parameter:<br>
+-- _code_: Chunk of code to highlight.<br>
+local function highlight_lua(code)
+  local out = lb.gsub(code,
+    function(u, s)
+      local sout
+      if u == 'c' then -- Comments.
+        sout = '<span class="c">'..escape(s)..'</span>'
+      elseif u == 's' then -- Strings.
+        sout = '<span class="s">'..escape(s)..'</span>'
+      elseif u == 'e' then -- Code.
+        -- First highlight function names.
+        s = s:gsub('function ([%w_:%.]+)', 'function <span class="nf">%1</span>')
+        -- There might be a non-keyword at the beginning of the snippet.
+        sout = s:match('^(%A+)') or ''
+        -- Iterate through Lua items and try to wrap operators,
+        -- keywords and built-in functions in span elements.
+        -- If nothing was highlighted go to the next category.
+        for item, sep in s:gmatch('([%a_]+)(%A+)') do
+          local span, n = wrap_in_span(item, operators, 'o')
+          if span == item then
+            span, n = wrap_in_span(item, keywords, 'k')
+          end
+          if span == item then
+            span, n = wrap_in_span(item, functions, 'nt')
+          end
+          sout = sout..span..sep
+        end
+      end
+      return sout
+    end)
+    out = '<div class="highlight"><pre>'..out..'</pre></div>'
+  return out
+end
+
+
+-- ### Main Documentation Generation Functions
 
 -- Given a string of source code, parse out each comment and the code that
 -- follows it, and create an individual section for it. Sections take the form:
@@ -62,7 +160,7 @@ end
 --
 -- Parameter:<br>
 -- _source_: The source file to process.<br>
-function parse(source)
+local function parse(source)
   local sections = {}
   local has_code = false
   local docs_text, code_text = '', ''
@@ -94,9 +192,9 @@ end
 -- table.<br>
 -- Parameter:<br>
 -- _sections_: A table with split sections.<br>
-function highlight(sections)
+local function highlight(sections)
   for i=1, #sections do
-    sections[i]['docs_html'] = markdown(sections[i]['docs_text'])
+    sections[i]['docs_html'] = md.markdown(sections[i]['docs_text'])
     sections[i]['code_html'] = highlight_lua(sections[i]['code_text'])
   end
   return sections
@@ -110,7 +208,7 @@ end
 -- _filename_: The filename of the source file.<br>
 -- _sections_: A table with the original sections and rendered as HTML.<br>
 -- _jump\_to_: A HTML chunk with links to other documentation files.
-function generate_html(source, path, filename, sections, jump_to)
+local function generate_html(source, path, filename, sections, jump_to)
   f, err = io.open(path..'/'..'docs/'..filename:gsub('lua$', 'html'), 'wb')
   if err then print(err) end
   local h = template.header:gsub('%%title%%', source)
@@ -126,115 +224,20 @@ function generate_html(source, path, filename, sections, jump_to)
   f:close()
 end
 
--- ### Helpers & Setup
-
--- We need the script location to add the script's directory to the package
--- path and to copy the style sheet from.
-script_path = arg[0]:match('(.+)/.+')
-package.path = table.concat({
-  script_path..'/?.lua',
-  package.path
-}, ';');
--- Load markdown.lua. It creates a global `markdown` function
-require 'markdown'
--- Load Lua Balanced.
-lb = require('luabalanced')
--- Load HTML templates.
-require 'template'
-
--- Ensure the `docs` directory exists and return the _path_ of the source file.<br>
--- Parameter:<br>
--- _source_: The source file for which documentation is generated.<br>
-function ensure_directory(source)
-  local path = source:match('(.+)/.+$')
-  if not path then path = '.' end
-  os.execute('mkdir -p '..path..'/docs')
-  return path
-end
-
--- Insert HTML entities in a string.<br>
--- Parameter:<br>
--- _s_: String to escape.<br>
-function escape(s)
-  s = s:gsub('<', '&lt;')
-  s = s:gsub('>', '&gt;')
-  s = s:gsub('%%', '&#37;')
-  return s
-end
-
-function replace_percent(s)
-  s = s:gsub('%%', '%%%%')
-  return s
-end
-
--- Define the Lua keywords, built-in functions and operators that should
--- be highlighted.
-local keywords = { 'break', 'do', 'else', 'elseif', 'end', 'false', 'for',
-                   'function', 'if', 'in', 'local', 'nil', 'repeat', 'return',
-                   'then', 'true', 'until', 'while' }
-local functions = { 'assert', 'collectgarbage', 'dofile', 'error', 'getfenv',
-                    'getmetatable', 'ipairs', 'load', 'loadfile', 'loadstring',
-                    'module', 'next', 'pairs', 'pcall', 'print', 'rawequal',
-                    'rawget', 'rawset', 'require', 'setfenv', 'setmetatable',
-                    'tonumber', 'tostring', 'type', 'unpack', 'xpcall' }
-local operators = { 'and', 'not', 'or' }
-
--- Wrap an item from a list of Lua keywords in a span template or return the
--- unchanged item.<br>
+-- Generate the documentation for a source file by reading it in,
+-- splitting it up into comment/code sections, highlighting and merging
+-- them into an HTML template.<br>
 -- Parameters:<br>
--- _item_: An item of a code snippet.<br>
--- _item\_list_: List of keywords or functions.<br>
--- _span\_class_: Style sheet class.<br>
-function wrap_in_span(item, item_list, span_class)
-  for i=1, #item_list do
-    if item_list[i] == item then
-      item = '<span class="'..span_class..'">'..item..'</span>'
-      break
-    end
-  end
-  return item
+-- _source_: The source file to process.<br>
+-- _path_: Path of the source file.<br>
+-- _filename_: The filename of the source file.<br>
+-- _jump\_to_: A HTML chunk with links to other documentation files.
+local function generate_documentation(source, path, filename, jump_to)
+  local sections = parse(source)
+  local sections = highlight(sections)
+  generate_html(source, path, filename, sections, jump_to)
 end
 
--- Quick and dirty source code highlighting. A chunk of code is split into
--- comments (at the end of a line), strings and code using the
--- [Lua Balanced](https://github.com/davidm/lua-balanced/blob/master/luabalanced.lua)
--- module. The code is then split again and matched against lists
--- of Lua keywords, functions or operators. All Lua items are wrapped into
--- a span having one of the classes defined in the Locco style sheet.<br>
--- Parameter:<br>
--- _code_: Chunk of code to highlight.<br>
-function highlight_lua(code)
-    local out = lb.gsub(code,
-      function(u, s)
-        local sout
-        if u == 'c' then -- Comments.
-          sout = '<span class="c">'..escape(s)..'</span>'
-        elseif u == 's' then -- Strings.
-          sout = '<span class="s">'..escape(s)..'</span>'
-        elseif u == 'e' then -- Code.
-          -- First highlight function names.
-          s = s:gsub('function ([%w_:%.]+)', 'function <span class="nf">%1</span>')
-          -- There might be a non-keyword at the beginning of the snippet.
-          sout = s:match('^(%A+)') or ''
-          -- Iterate through Lua items and try to wrap operators,
-          -- keywords and built-in functions in span elements.
-          -- If nothing was highlighted go to the next category.
-          for item, sep in s:gmatch('([%a_]+)(%A+)') do
-            local span, n = wrap_in_span(item, operators, 'o')
-            if span == item then
-              span, n = wrap_in_span(item, keywords, 'k')
-            end
-            if span == item then
-              span, n = wrap_in_span(item, functions, 'nt')
-            end
-            sout = sout..span..sep
-          end
-        end
-        return sout
-      end)
-      out = '<div class="highlight"><pre>'..out..'</pre></div>'
-    return out
-  end
 
 -- Run the script.
 
