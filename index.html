@@ -93,7 +93,7 @@ license.</p>
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> md = <span class="nt">require</span> <span class="s">'locco.markdown'</span>
+  <div class="highlight"><pre><span class="k">local</span> md = <span class="nt">require</span> <span class="s">'lib.markdown'</span>
 </pre></div>
 </td>
 </tr><tr id="section-4">
@@ -107,7 +107,7 @@ license.</p>
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> lb = <span class="nt">require</span> <span class="s">'locco.luabalanced'</span>
+  <div class="highlight"><pre><span class="k">local</span> lb = <span class="nt">require</span> <span class="s">'lib.luabalanced'</span>
 </pre></div>
 </td>
 </tr><tr id="section-5">
@@ -121,7 +121,7 @@ license.</p>
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> template = <span class="nt">require</span> <span class="s">'locco.template'</span>
+  <div class="highlight"><pre><span class="k">local</span> template = <span class="nt">require</span> <span class="s">'lib.template'</span>
 </pre></div>
 </td>
 </tr><tr id="section-6">
@@ -248,7 +248,8 @@ Parameter:<br>
       <span class="k">elseif</span> u == <span class="s">'s'</span> <span class="k">then</span> <span class="c">-- Strings.
 </span>        sout = <span class="s">'&lt;span class="s"&gt;'</span>..escape(s)..<span class="s">'&lt;/span&gt;'</span>
       <span class="k">elseif</span> u == <span class="s">'e'</span> <span class="k">then</span> <span class="c">-- Code.
-</span></pre></div>
+</span>        s = escape(s)
+</pre></div>
 </td>
 </tr><tr id="section-11">
 <td class="docs">
@@ -486,7 +487,7 @@ Parameters:<br>
 </td>
 <td class="code">
   <div class="highlight"><pre><span class="k">local</span> jump_to = <span class="s">''</span>
-<span class="k">if</span> #arg > 1 <span class="k">then</span>
+<span class="k">if</span> #arg &gt; 1 <span class="k">then</span>
   jump_to = template.jump_start
   <span class="k">for</span> i=1, #arg <span class="k">do</span>
     <span class="k">local</span> link = arg[i]:gsub(<span class="s">'lua$'</span>, <span class="s">'html'</span>)
