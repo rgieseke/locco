@@ -20,9 +20,9 @@ dependencies = {
 build = {
   type = "builtin",
   modules = {
-    ['locco.luabalanced'] = 'luabalanced.lua',
-    ['locco.markdown'] = 'markdown.lua',
-    ['locco.template'] = 'template.lua'
+    ['locco.lib.luabalanced'] = 'lib/luabalanced.lua',
+    ['locco.lib.markdown'] = 'lib/markdown.lua',
+    ['locco.lib.template'] = 'lib/template.lua'
    },
    install = {
      bin = {["locco"] = "locco.lua"}
