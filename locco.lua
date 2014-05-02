@@ -36,20 +36,12 @@
 
 -- ### Setup & Helpers
 
--- We need the script location to add the script's directory to the package
--- path and to copy the style sheet from.
-local script_path = arg[0]:match('(.+)/.+')
-package.path = table.concat({
-  script_path..'/?.lua',
-  package.path
-}, ';');
-
 -- Load markdown.lua.
-local md = require 'markdown'
+local md = require 'locco.markdown'
 -- Load Lua Balanced.
-local lb = require('luabalanced')
+local lb = require 'locco.luabalanced'
 -- Load HTML templates.
-local template = require 'template'
+local template = require 'locco.template'
 
 -- Ensure the `docs` directory exists and return the _path_ of the source file.<br>
 -- Parameter:<br>
