@@ -256,11 +256,14 @@ if #arg > 1 then
 end
 
 -- Make sure the output directory exists, generate the HTML files for each
--- source file, print what's happening and copy the style sheet.
+-- source file, print what's happening and write the style sheet.
 local path = ensure_directory(arg[1])
 for i=1, #arg do
   local filename = arg[i]:match('.+/(.+)$') or arg[i]
   generate_documentation(arg[i], path, filename, jump_to)
   print(arg[i]..' --> '..path..'/docs/'..filename:gsub('lua$', 'html'))
 end
-os.execute('cp '..script_path..'/locco.css '..path..'/docs')
+f, err = io.open(path..'/'..'docs/locco.css', 'wb')
+if err then print(err) end
+f:write(template.css)
+f:close()
