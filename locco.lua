@@ -13,7 +13,9 @@
 -- [Lua Balanced](https://github.com/davidm/lua-balanced) to split
 -- up the code. As a markdown engine it ships with
 -- [Niklas Frykholm](http://www.frykholm.se/)'s
--- [markdown.lua](http://www.frykholm.se/files/markdown.lua). Otherwise there
+-- [markdown.lua](http://www.frykholm.se/files/markdown.lua) in the [Lua 5.2
+-- compatible version](https://github.com/speedata/luamarkdown) from
+-- [Patrick Gundlach](https://github.com/pgundlach). Otherwise there
 -- are no external dependencies.
 --
 -- The generated HTML documentation for the given source files is saved
@@ -21,15 +23,9 @@
 -- the command-line:
 --     locco.lua project/*.lua
 --
--- Locco is monolingual, but there are also
--- [Docco](http://jashkenas.github.com/docco/),
--- [Rocco](http://rtomayko.github.com/rocco/>),
--- [Shocco](http://rtomayko.github.com/shocco/),
--- [Pycco](http://fitzgen.github.com/pycco/),
--- [Marginalia](http://fogus.github.com/marginalia/)
--- and
--- [Nocco](http://dontangg.github.com/nocco/)
--- written in and with support for other languages.<br>
+-- Locco is monolingual, but there are many projects written in
+-- and with support for other languages, see the
+-- [Docco](http://jashkenas.github.com/docco/) page for a list.<br>
 -- The [source for Locco](https://github.com/rgieseke/locco) is available on
 -- GitHub, and released under the MIT
 -- license.
