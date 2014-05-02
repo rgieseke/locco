@@ -33,11 +33,11 @@
 -- ### Setup & Helpers
 
 -- Load markdown.lua.
-local md = require 'locco.markdown'
+local md = require 'lib.markdown'
 -- Load Lua Balanced.
-local lb = require 'locco.luabalanced'
+local lb = require 'lib.luabalanced'
 -- Load HTML templates.
-local template = require 'locco.template'
+local template = require 'lib.template'
 
 -- Ensure the `docs` directory exists and return the _path_ of the source file.<br>
 -- Parameter:<br>
@@ -109,6 +109,7 @@ local function highlight_lua(code)
       elseif u == 's' then -- Strings.
         sout = '<span class="s">'..escape(s)..'</span>'
       elseif u == 'e' then -- Code.
+        s = escape(s)
         -- First highlight function names.
         s = s:gsub('function ([%w_:%.]+)', 'function <span class="nf">%1</span>')
         -- There might be a non-keyword at the beginning of the snippet.
