@@ -88,12 +88,16 @@ license.</p>
     <a class="pilcrow" href="#section-3">&#182;</a>
   </div>
   
-<p>Load markdown.lua.</p>
+<p>Add script path to package path to find submodules.</p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> md = <span class="nt">require</span> <span class="s">'lib.markdown'</span>
+  <div class="highlight"><pre><span class="k">local</span> script_path = arg[0]:match(<span class="s">'(.+)/.+'</span>)
+package.path = table.concat({
+  script_path..<span class="s">'/?.lua'</span>,
+  package.path
+}, <span class="s">';'</span>)
 </pre></div>
 </td>
 </tr><tr id="section-4">
@@ -102,12 +106,12 @@ license.</p>
     <a class="pilcrow" href="#section-4">&#182;</a>
   </div>
   
-<p>Load Lua Balanced.</p>
+<p>Load markdown.lua.</p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> lb = <span class="nt">require</span> <span class="s">'lib.luabalanced'</span>
+  <div class="highlight"><pre><span class="k">local</span> md = <span class="nt">require</span> <span class="s">'markdown'</span>
 </pre></div>
 </td>
 </tr><tr id="section-5">
@@ -116,18 +120,32 @@ license.</p>
     <a class="pilcrow" href="#section-5">&#182;</a>
   </div>
   
-<p>Load HTML templates.</p>
+<p>Load Lua Balanced.</p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> template = <span class="nt">require</span> <span class="s">'lib.template'</span>
+  <div class="highlight"><pre><span class="k">local</span> lb = <span class="nt">require</span> <span class="s">'luabalanced'</span>
 </pre></div>
 </td>
 </tr><tr id="section-6">
 <td class="docs">
   <div class="pilwrap">
     <a class="pilcrow" href="#section-6">&#182;</a>
+  </div>
+  
+<p>Load HTML templates.</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> template = <span class="nt">require</span> <span class="s">'template'</span>
+</pre></div>
+</td>
+</tr><tr id="section-7">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-7">&#182;</a>
   </div>
   
 <p>Ensure the <code>docs</code> directory exists and return the <em>path</em> of the source file.<br>
@@ -145,10 +163,10 @@ Parameter:<br>
 <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-7">
+</tr><tr id="section-8">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-7">&#182;</a>
+    <a class="pilcrow" href="#section-8">&#182;</a>
   </div>
   
 <p>Insert HTML entities in a string.<br>
@@ -159,22 +177,35 @@ Parameter:<br>
 </td>
 <td class="code">
   <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">escape</span>(s)
-  s = s:gsub(<span class="s">'&lt;'</span>, <span class="s">'&lt;'</span>)
-  s = s:gsub(<span class="s">'&gt;'</span>, <span class="s">'&gt;'</span>)
-  s = s:gsub(<span class="s">'&#37;&#37;'</span>, <span class="s">'&#37;'</span>)
-  <span class="k">return</span> s
-<span class="k">end</span>
-
-<span class="k">local</span> <span class="k">function</span> <span class="nf">replace_percent</span>(s)
-  s = s:gsub(<span class="s">'&#37;&#37;'</span>, <span class="s">'&#37;&#37;&#37;&#37;'</span>)
+  s = s:gsub(<span class="s">'&amp;'</span>, <span class="s">'&amp;amp;'</span>)
+  s = s:gsub(<span class="s">'&lt;'</span>, <span class="s">'&amp;lt;'</span>)
+  s = s:gsub(<span class="s">'&gt;'</span>, <span class="s">'&amp;gt;'</span>)
+  s = s:gsub(<span class="s">'&#37;&#37;'</span>, <span class="s">'&amp;#37;'</span>)
   <span class="k">return</span> s
 <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-8">
+</tr><tr id="section-9">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-8">&#182;</a>
+    <a class="pilcrow" href="#section-9">&#182;</a>
+  </div>
+  
+<p>local function replace_percent(s)
+ s = s:gsub('%', '%%')
+ return s
+end</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+</pre></div>
+</td>
+</tr><tr id="section-10">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-10">&#182;</a>
   </div>
   
 <p>Define the Lua keywords, built-in functions and operators that should
@@ -194,10 +225,10 @@ be highlighted.</p>
 <span class="k">local</span> operators = { <span class="s">'and'</span>, <span class="s">'not'</span>, <span class="s">'or'</span> }
 </pre></div>
 </td>
-</tr><tr id="section-9">
+</tr><tr id="section-11">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-9">&#182;</a>
+    <a class="pilcrow" href="#section-11">&#182;</a>
   </div>
   
 <p>Wrap an item from a list of Lua keywords in a span template or return the
@@ -221,10 +252,10 @@ Parameters:<br>
 <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-10">
+</tr><tr id="section-12">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-10">&#182;</a>
+    <a class="pilcrow" href="#section-12">&#182;</a>
   </div>
   
 <p>Quick and dirty source code highlighting. A chunk of code is split into
@@ -251,10 +282,10 @@ Parameter:<br>
 </span>        s = escape(s)
 </pre></div>
 </td>
-</tr><tr id="section-11">
+</tr><tr id="section-13">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-11">&#182;</a>
+    <a class="pilcrow" href="#section-13">&#182;</a>
   </div>
   
 <p>First highlight function names.</p>
@@ -265,10 +296,10 @@ Parameter:<br>
   <div class="highlight"><pre>        s = s:gsub(<span class="s">'function ([&#37;w_:&#37;.]+)'</span>, <span class="s">'function &lt;span class="nf"&gt;&#37;1&lt;/span&gt;'</span>)
 </pre></div>
 </td>
-</tr><tr id="section-12">
+</tr><tr id="section-14">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-12">&#182;</a>
+    <a class="pilcrow" href="#section-14">&#182;</a>
   </div>
   
 <p>There might be a non-keyword at the beginning of the snippet.</p>
@@ -279,10 +310,10 @@ Parameter:<br>
   <div class="highlight"><pre>        sout = s:match(<span class="s">'^(&#37;A+)'</span>) <span class="o">or</span> <span class="s">''</span>
 </pre></div>
 </td>
-</tr><tr id="section-13">
+</tr><tr id="section-15">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-13">&#182;</a>
+    <a class="pilcrow" href="#section-15">&#182;</a>
   </div>
   
 <p>Iterate through Lua items and try to wrap operators,
@@ -311,10 +342,10 @@ If nothing was highlighted go to the next category.</p>
 
 </pre></div>
 </td>
-</tr><tr id="section-14">
+</tr><tr id="section-16">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-14">&#182;</a>
+    <a class="pilcrow" href="#section-16">&#182;</a>
   </div>
   
 <h3>Main Documentation Generation Functions</h3>
@@ -325,10 +356,10 @@ If nothing was highlighted go to the next category.</p>
   <div class="highlight"><pre>
 </pre></div>
 </td>
-</tr><tr id="section-15">
+</tr><tr id="section-17">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-15">&#182;</a>
+    <a class="pilcrow" href="#section-17">&#182;</a>
   </div>
   
 <p>Given a string of source code, parse out each comment and the code that
@@ -375,10 +406,10 @@ follows it, and create an individual section for it. Sections take the form:</p>
 <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-16">
+</tr><tr id="section-18">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-16">&#182;</a>
+    <a class="pilcrow" href="#section-18">&#182;</a>
   </div>
   
 <p>Loop through a table of split sections and convert the documentation
@@ -400,10 +431,10 @@ Parameter:<br>
 <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-17">
+</tr><tr id="section-19">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-17">&#182;</a>
+    <a class="pilcrow" href="#section-19">&#182;</a>
   </div>
   
 <p>After the highlighting is done, the template is filled with the documentation
@@ -426,8 +457,8 @@ Parameters:<br>
   f:write(h)
   <span class="k">for</span> i=1, #sections <span class="k">do</span>
     <span class="k">local</span> t = template.table_entry:gsub(<span class="s">'&#37;&#37;index&#37;&#37;'</span>, i..<span class="s">''</span>)
-    t = t:gsub(<span class="s">'&#37;&#37;docs_html&#37;&#37;'</span>, replace_percent(sections[i][<span class="s">'docs_html'</span>]))
-    t = t:gsub(<span class="s">'&#37;&#37;code_html&#37;&#37;'</span>, replace_percent(sections[i][<span class="s">'code_html'</span>]))
+    t = t:gsub(<span class="s">'&#37;&#37;docs_html&#37;&#37;'</span>, sections[i][<span class="s">'docs_html'</span>])
+    t = t:gsub(<span class="s">'&#37;&#37;code_html&#37;&#37;'</span>, sections[i][<span class="s">'code_html'</span>])
     f:write(t)
   <span class="k">end</span>
   f:write(template.footer)
@@ -435,10 +466,10 @@ Parameters:<br>
 <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-18">
+</tr><tr id="section-20">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-18">&#182;</a>
+    <a class="pilcrow" href="#section-20">&#182;</a>
   </div>
   
 <p>Generate the documentation for a source file by reading it in,
@@ -461,10 +492,10 @@ Parameters:<br>
 
 </pre></div>
 </td>
-</tr><tr id="section-19">
+</tr><tr id="section-21">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-19">&#182;</a>
+    <a class="pilcrow" href="#section-21">&#182;</a>
   </div>
   
 <p>Run the script.</p>
@@ -475,10 +506,10 @@ Parameters:<br>
   <div class="highlight"><pre>
 </pre></div>
 </td>
-</tr><tr id="section-20">
+</tr><tr id="section-22">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-20">&#182;</a>
+    <a class="pilcrow" href="#section-22">&#182;</a>
   </div>
   
 <p>Generate HTML links to other files in the documentation.</p>
@@ -500,10 +531,10 @@ Parameters:<br>
 <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-21">
+</tr><tr id="section-23">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-21">&#182;</a>
+    <a class="pilcrow" href="#section-23">&#182;</a>
   </div>
   
 <p>Make sure the output directory exists, generate the HTML files for each
