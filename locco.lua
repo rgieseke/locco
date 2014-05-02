@@ -32,12 +32,19 @@
 
 -- ### Setup & Helpers
 
+-- Add script path to package path to find submodules.
+local script_path = arg[0]:match('(.+)/.+')
+package.path = table.concat({
+  script_path..'/?.lua',
+  package.path
+}, ';')
+
 -- Load markdown.lua.
-local md = require 'lib.markdown'
+local md = require 'markdown'
 -- Load Lua Balanced.
-local lb = require 'lib.luabalanced'
+local lb = require 'luabalanced'
 -- Load HTML templates.
-local template = require 'lib.template'
+local template = require 'template'
 
 -- Ensure the `docs` directory exists and return the _path_ of the source file.<br>
 -- Parameter:<br>
