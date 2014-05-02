@@ -197,7 +197,7 @@ end
 -- _sections_: A table with the original sections and rendered as HTML.<br>
 -- _jump\_to_: A HTML chunk with links to other documentation files.
 local function generate_html(source, path, filename, sections, jump_to)
-  f, err = io.open(path..'/'..'docs/'..filename:gsub('lua$', 'html'), 'wb')
+  local f, err = io.open(path..'/'..'docs/'..filename:gsub('lua$', 'html'), 'wb')
   if err then print(err) end
   local h = template.header:gsub('%%title%%', source)
   h = h:gsub('%%jump%%', jump_to)
@@ -251,7 +251,7 @@ for i=1, #arg do
   generate_documentation(arg[i], path, filename, jump_to)
   print(arg[i]..' --> '..path..'/docs/'..filename:gsub('lua$', 'html'))
 end
-f, err = io.open(path..'/'..'docs/locco.css', 'wb')
+local f, err = io.open(path..'/'..'docs/locco.css', 'wb')
 if err then print(err) end
 f:write(template.css)
 f:close()
